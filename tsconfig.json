@@ -1,9 +1,9 @@
 {
 	"compilerOptions": {
-		"module": "commonjs",
+		"module": "ES2020",
 		"target": "ES2020",
 		"lib": [
-			"ES2020"
+			"ES2020", "DOM"
 		],
 		"sourceMap": true,
 		"rootDir": "src",
@@ -12,5 +12,8 @@
 		// "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
 		// "noFallthroughCasesInSwitch": true, /* Report errors for fallthrough cases in switch statement. */
 		// "noUnusedParameters": true,  /* Report errors on unused parameters. */
-	}
+	},
+    "extends": "@tsconfig/svelte/tsconfig.json",
+    "include": ["src/**/*"],
+    "exclude": ["node_modules/*", "__sapper__/*", "public/*", "src/test/*"],
 }

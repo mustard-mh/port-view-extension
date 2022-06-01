@@ -1,5 +1,6 @@
-<script>
+<script lang="ts">
     let time = new Date().toString();
+    let ports: Array<number> = [1, 2, 3];
     window.addEventListener("message", (event) => {
         if (event.data.command === "changeName") {
             time = event.data.name;
@@ -8,7 +9,7 @@
 </script>
 
 <main>
-    <h1>Hello World!</h1>
+    <h1>Hello World11!</h1>
     <p>
         Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn
         how to build Svelte apps.
