@@ -1,0 +1,6 @@
+tasks:
+  - init: yarn
+
+vscode:
+  extensions:
+    - svelte.svelte-vscode
