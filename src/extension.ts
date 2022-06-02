@@ -1,7 +1,4 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import * as path from "path";
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -10,13 +7,12 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(
         vscode.window.registerWebviewViewProvider(TestProvider.viewType, provider)
     );
-
     vscode.commands.executeCommand('setContext', 'forwardedPortsViewEnabled', true);
-    // context.subscriptions.push(disposable);
 }
 
-// this method is called when your extension is deactivated
 export function deactivate() { }
+
+type PortCommand = "openBrowser" | "openPreview" | "makePublic" | "makePrivate";
 
 class TestProvider implements vscode.WebviewViewProvider {
     public static readonly viewType = "calicoColors.colorsView";
@@ -40,6 +36,18 @@ class TestProvider implements vscode.WebviewViewProvider {
             localResourceRoots: [this.context.extensionUri],
         };
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
+        webviewView.webview.onDidReceiveMessage(async (message: { command: PortCommand, port: { port: number } }) => {
+            const localUrl = vscode.Uri.parse('http://localhost:' + message.port.port);
+            switch (message.command) {
+                case "openBrowser":
+                    return vscode.env.openExternal(localUrl);
+                case "openPreview":
+                    await vscode.commands.executeCommand('simpleBrowser.api.open', localUrl, {
+                        viewColumn: vscode.ViewColumn.Beside,
+                        preserveFocus: true
+                    });
+            }
+        });
     }
 
     private _getHtmlForWebview(webview: vscode.Webview) {

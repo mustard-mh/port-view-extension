@@ -2,11 +2,11 @@
     import ContextMenu from "./ContextMenu.svelte";
     let time = new Date().toString();
     let headers = [
-        { label: "Port", field: "port" },
+        { label: "Port", field: "port", width: 120 },
         { label: "Local Address", field: "local_address" },
-        { label: "Running Process", field: "running_process" },
-        { label: "Visibility", field: "visibility" },
-        { label: "Origin", field: "origin" },
+        { label: "Running Process", field: "running_process", width: 140 },
+        { label: "Visibility", field: "visibility", width: 120 },
+        { label: "Origin", field: "origin", width: 120 },
     ];
     let ports = [
         {
@@ -34,13 +34,15 @@
         });
     }
 
-    $: mappedPorts = ports.map((e) => {
-        if (e.local_address?.length > 0) {
-            e._local_address = e.local_address;
-            e.local_address = `<a href="${e.local_address}">${e.local_address}</a>`;
-        }
-        return e;
-    });
+    $: mappedPorts = ports
+        .sort((a, b) => a.port - b.port)
+        .map((e) => {
+            if (e.local_address?.length > 0) {
+                e._local_address = e.local_address;
+                e.local_address = `<a href="${e.local_address}">${e.local_address}</a>`;
+            }
+            return e;
+        });
 
     window.addEventListener("message", (event) => {
         if (event.data.command === "changeName") {
@@ -80,7 +82,10 @@
 
     function menuCommand(event) {
         const { command, port } = event.detail;
-        console.log("==========onMenuCommand", command, port);
+        vscode.postMessage({
+            command,
+            port,
+        });
         closeMenu();
     }
 
@@ -95,9 +100,9 @@
     />
     <table class:table-hover={tableHovered}>
         <tr>
-            <th />
+            <th width="40px" />
             {#each headers as header (header.label)}
-                <th>{header.label}</th>
+                <th width={header.width + "px"}>{header.label}</th>
             {/each}
         </tr>
         {#each mappedPorts as port, i (port.port)}
@@ -108,11 +113,9 @@
                 on:contextmenu|preventDefault={(event) =>
                     onRightClick(event, port)}
             >
-                <td>
-                    <div>o</div>
-                </td>
+                <td class="text-center">o</td>
                 {#each headers as header (header.label)}
-                    <td><div>{@html port[header.field]}</div></td>
+                    <td class="truncate">{@html port[header.field]}</td>
                 {/each}
             </tr>
         {/each}
@@ -127,6 +130,7 @@
         border-collapse: collapse;
         font-size: 13px;
         border-spacing: 0;
+        table-layout: fixed;
     }
     tr {
         height: 22px;
@@ -135,13 +139,22 @@
     td,
     th {
         text-align: left;
-        padding-left: 10px;
+        padding: 0 8px;
+        box-sizing: border-box;
         border-width: 0px 1px 0px 1px;
         border-collapse: collapse;
         border-style: solid;
         border-color: transparent;
         resize: horizontal;
-        overflow: auto;
+    }
+    .truncate {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .text-center {
+        text-align: center;
     }
 
     ::-webkit-resizer {

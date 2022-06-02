@@ -33,6 +33,10 @@
     ];
 
     function selectCommand(command) {
+        if (command === "makePublic" && port.visibility === "public") {
+            dispatch("command", { command: "makePrivate", port });
+            return;
+        }
         dispatch("command", { command, port });
     }
 </script>
