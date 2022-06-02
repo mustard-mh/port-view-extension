@@ -48,7 +48,7 @@
         "test": "node ./out/test/runTest.js",
         "svelte:build": "rm -rf out; rollup -c",
         "svelte:dev": "rollup -c -w",
-        "start": "sirv public --no-clear"
+        "start": "sirv dist --no-clear"
     },
     "devDependencies": {
         "@types/vscode": "^1.67.0",

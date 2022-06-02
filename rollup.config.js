@@ -28,7 +28,7 @@ function serve() {
     };
 }
 
-const outputFolder = 'dist/compiled';
+const outputFolder = 'dist';
 
 export default {
     input: 'src/main.js',
@@ -36,7 +36,7 @@ export default {
         sourcemap: true,
         format: 'iife',
         name: 'app',
-        file: `${outputFolder}/bundle.js`
+        file: `${outputFolder}/compiled/bundle.js`
     },
     plugins: [
         svelte({
@@ -66,7 +66,7 @@ export default {
 
         // Watch the `public` directory and refresh the
         // browser on changes when not in production
-        !production && livereload(outputFolder),
+        // !production && livereload(outputFolder),
 
         // If we're building for production (npm run build
         // instead of npm run dev), minify
