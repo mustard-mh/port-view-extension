@@ -24,6 +24,15 @@
             origin: "Auto Forwarded",
         },
     ];
+    for (let i = 0; i < 20; i++) {
+        ports.push({
+            port: 9000 + i,
+            local_address: "https://github.com/mustard-mh/port-view-extension",
+            running_process: "/usr/bin/node hello.js",
+            visibility: "private",
+            origin: "Auto Forwarded",
+        });
+    }
 
     $: mappedPorts = ports.map((e) => {
         if (e.local_address?.length > 0) {
@@ -131,46 +140,31 @@
         border-collapse: collapse;
         border-style: solid;
         border-color: transparent;
-    }
-
-    th,
-    td {
         resize: horizontal;
         overflow: auto;
     }
 
     ::-webkit-resizer {
-        /*size does not work*/
-        display: block;
-        width: 150px !important;
-        /* height: 150px !important; */
-        width: 2px;
-        background-color: red;
-        height: 300px !important;
+        background-color: transparent;
     }
 
-    td {
-        overflow: auto;
+    .table-hover td {
+        border-color: var(--vscode-scrollbarSlider-background) !important;
     }
-    td > div {
-        resize: both;
-    }
-
-    /* .table-hover td {
-        border-color: gray !important;
-    } */
 
     th {
         font-weight: 700;
     }
+    /* tree.tableOddRowsBackground */
+    .tr-data:nth-child(odd) {
+        background-color: var(--vscode-tree-tableOddRowsBackground);
+    }
     .tr-data:hover {
-        background-color: var(--vscode-toolbar-hoverBackground);
+        background-color: var(--vscode-list-hoverBackground);
     }
-    .tr-data::selection {
-        background-color: var(--vscode-toolbar-hoverBackground);
-    }
-
     .tr-select {
-        background-color: var(--vscode-menu-selectionBackground) !important;
+        background-color: var(
+            --vscode-list-activeSelectionBackground
+        ) !important;
     }
 </style>

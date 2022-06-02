@@ -80,6 +80,6 @@
         border-bottom: 1px solid var(--vscode-textSeparator-foreground);
     }
     .opt:hover {
-        background-color: var(--vscode-menu-selectionBackground);
+        background-color: var(--vscode-list-activeSelectionBackground);
     }
 </style>
