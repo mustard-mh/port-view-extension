@@ -1,5 +1,6 @@
 <script>
     import ContextMenu from "./ContextMenu.svelte";
+    import Resizable from "./Resizable.svelte";
     let time = new Date().toString();
     let headers = [
         { label: "Port", field: "port" },
@@ -79,6 +80,9 @@
 </script>
 
 <main>
+    <Resizable>
+        <span>HELLOWORLD</span>
+    </Resizable>
     <ContextMenu
         {...menuData}
         on:clickoutside={closeMenu}
