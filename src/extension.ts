@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import dataJson from './a.json';
 
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
@@ -20,9 +21,9 @@ class TestProvider implements vscode.WebviewViewProvider {
     public _view?: vscode.WebviewView;
 
     constructor(private readonly context: vscode.ExtensionContext) {
-        setInterval(() => {
-            this._view?.webview.postMessage({ command: "changeName", name: (new Date()).toString() });
-        }, 1000);
+        setTimeout(() => {
+            this._view?.webview.postMessage({ command: "updatePorts", ports: dataJson });
+        }, 3000);
     }
 
     public resolveWebviewView(
@@ -36,17 +37,14 @@ class TestProvider implements vscode.WebviewViewProvider {
             localResourceRoots: [this.context.extensionUri],
         };
         webviewView.webview.html = this._getHtmlForWebview(webviewView.webview);
-        webviewView.webview.onDidReceiveMessage(async (message: { command: PortCommand, port: { port: number } }) => {
-            const localUrl = vscode.Uri.parse('http://localhost:' + message.port.port);
-            switch (message.command) {
-                case "openBrowser":
-                    return vscode.env.openExternal(localUrl);
-                case "openPreview":
-                    await vscode.commands.executeCommand('simpleBrowser.api.open', localUrl, {
-                        viewColumn: vscode.ViewColumn.Beside,
-                        preserveFocus: true
-                    });
-            }
+        this.onHtmlCommand();
+    }
+
+    private onHtmlCommand() {
+        this._view?.webview.onDidReceiveMessage(async (message: { command: string, port: any }) => {
+            const command = message.command;
+            const port = JSON.stringify(message.port);
+            vscode.window.showInformationMessage(`${command} - ${port}`);
         });
     }
 

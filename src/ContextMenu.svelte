@@ -21,22 +21,44 @@
         if (y > window.innerHeight - rect.height) y -= rect.height;
     })(x, y);
 
-    const menuOptions = [
-        { command: "openBrowser", label: "Open in Browser", desc: "" },
-        { command: "openPreview", label: "Preview in Editor", desc: "" },
-        { type: "divider" },
-        {
-            command: "makePublic",
-            label: "Switch Port Public/Private",
-            desc: "cmd+x",
-        },
-    ];
-
-    function selectCommand(command) {
-        if (command === "makePublic" && port.visibility === "public") {
-            dispatch("command", { command: "makePrivate", port });
+    let menuOptions = [];
+    $: ((port) => {
+        if (port == null) {
             return;
         }
+        const options = [];
+        const viewItem = port.info.contextValue;
+        if (viewItem.includes("host") && viewItem.includes("tunneled")) {
+            options.push("tunnelNetwork");
+        }
+        if (viewItem.includes("network") && viewItem.includes("tunneled")) {
+            options.push("tunnelHost");
+        }
+        options.length > 0 && options.push(null);
+        if (viewItem.includes("private")) {
+            options.push("makePublic");
+        }
+        if (viewItem.includes("public")) {
+            options.push("makePrivate");
+        }
+        if (viewItem.includes("exposed") || viewItem.includes("tunneled")) {
+            options.push("preview");
+            options.push("openBrowser");
+        }
+        if (viewItem.includes("failed")) {
+            options.length > 0 && options.push(null);
+            options.push("retryAutoExpose");
+        }
+        menuOptions = options.map((e) => {
+            if (e == null) {
+                return { type: "divider" };
+            }
+            // TODO(hw): How to align to package.nls.json with code?
+            return { command: e, label: e, desc: "" };
+        });
+    })(port);
+
+    function selectCommand(command) {
         dispatch("command", { command, port });
     }
 </script>
@@ -65,7 +87,7 @@
 
 <style>
     .menu {
-        position: absolute;
+        position: fixed;
         display: grid;
         width: 300px;
         border: 1px solid var(--vscode-menu-selectionBorder);

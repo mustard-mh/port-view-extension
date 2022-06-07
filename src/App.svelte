@@ -1,52 +1,9 @@
 <script>
     import ContextMenu from "./ContextMenu.svelte";
-    let time = new Date().toString();
-    let headers = [
-        { label: "Port", field: "port", width: 120 },
-        { label: "Local Address", field: "local_address" },
-        { label: "Running Process", field: "running_process", width: 140 },
-        { label: "Visibility", field: "visibility", width: 120 },
-        { label: "Origin", field: "origin", width: 120 },
-    ];
-    let ports = [
-        {
-            port: 3000,
-            local_address: "https://github.com/mustard-mh/port-view-extension",
-            running_process: "/usr/bin/node hello.js",
-            visibility: "private",
-            origin: "Auto Forwarded",
-        },
-        {
-            port: 8080,
-            local_address: "http://localhost:8080",
-            running_process: "",
-            visibility: "public",
-            origin: "Auto Forwarded",
-        },
-    ];
-    for (let i = 0; i < 20; i++) {
-        ports.push({
-            port: 9000 + i,
-            local_address: "https://github.com/mustard-mh/port-view-extension",
-            running_process: "/usr/bin/node hello.js",
-            visibility: "private",
-            origin: "Auto Forwarded",
-        });
-    }
-
-    $: mappedPorts = ports
-        .sort((a, b) => a.port - b.port)
-        .map((e) => {
-            if (e.local_address?.length > 0) {
-                e._local_address = e.local_address;
-                e.local_address = `<a href="${e.local_address}">${e.local_address}</a>`;
-            }
-            return e;
-        });
-
+    let ports = "";
     window.addEventListener("message", (event) => {
-        if (event.data.command === "changeName") {
-            time = event.data.name;
+        if (event.data.command === "updatePorts") {
+            ports = event.data.ports.sort((a, b) => a.status.localPort - b.status.localPort);
         }
     });
 
@@ -77,7 +34,9 @@
     let currentSelectPort = undefined;
     function selectRow(event, port, index) {
         currentSelectPort =
-            currentSelectPort?.port === port.port ? undefined : port;
+            currentSelectPort?.status.localPort === port.status.localPort
+                ? undefined
+                : port;
     }
 
     function menuCommand(event) {
@@ -101,26 +60,54 @@
     <table class:table-hover={tableHovered}>
         <tr>
             <th width="40px" />
-            {#each headers as header (header.label)}
-                <th width={header.width + "px"}>{header.label}</th>
-            {/each}
+            <th width="120px">Port</th>
+            <th>Local Address</th>
+            <th width="140px">Running Process</th>
+            <th width="120px">Visibility</th>
+            <th width="120px">Origin</th>
         </tr>
-        {#each mappedPorts as port, i (port.port)}
+        {#each ports as port, i (port.status.localPort)}
             <tr
                 class="tr-data"
-                class:tr-select={currentSelectPort?.port === port.port}
+                class:tr-select={currentSelectPort &&
+                    currentSelectPort.status.localPort ===
+                        port.status.localPort}
                 on:click={(e) => selectRow(e, port)}
                 on:contextmenu|preventDefault={(event) =>
                     onRightClick(event, port)}
             >
-                <td class="text-center">o</td>
-                {#each headers as header (header.label)}
-                    <td class="truncate">{@html port[header.field]}</td>
-                {/each}
+                <td
+                    class:served={port.status.served}
+                    style="text-align: center"
+                >
+                    <!-- TODO(hw): How to use vscode.ThemeIcon (port.info.iconPath) here? If can't is `codicon` helpful for us? -->
+                    o
+                </td>
+                <td>{port.info.label}</td>
+                <td>
+                    {#if (port.status.exposed?.url.length ?? 0) > 0}
+                        <a href={port.status.exposed?.url}
+                            >{port.status.exposed?.url}</a
+                        >
+                    {/if}
+                </td>
+                <td>
+                    <!-- TODO(hw): no data for Running Process now -->
+                </td>
+                <td>
+                    {#if port.status.served}
+                        {port.status.exposed.visibility === 1
+                            ? "public"
+                            : "private"}
+                    {/if}
+                </td>
+                <td>
+                    <!-- TODO(hw): What is `Origin` ? -->
+                    {port.info.contextValue}
+                </td>
             </tr>
         {/each}
     </table>
-    <span hidden class="tr-select" />
 </main>
 
 <style>
@@ -147,14 +134,10 @@
         border-color: transparent;
         resize: horizontal;
     }
-    .truncate {
+    td {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-    }
-
-    .text-center {
-        text-align: center;
     }
 
     ::-webkit-resizer {
@@ -179,5 +162,9 @@
         background-color: var(
             --vscode-list-activeSelectionBackground
         ) !important;
+    }
+
+    .served {
+        color: green;
     }
 </style>
