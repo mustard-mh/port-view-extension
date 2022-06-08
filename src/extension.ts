@@ -23,7 +23,7 @@ class TestProvider implements vscode.WebviewViewProvider {
     constructor(private readonly context: vscode.ExtensionContext) {
         setTimeout(() => {
             this._view?.webview.postMessage({ command: "updatePorts", ports: dataJson });
-        }, 3000);
+        }, 1000);
     }
 
     public resolveWebviewView(
@@ -60,10 +60,9 @@ class TestProvider implements vscode.WebviewViewProvider {
             <html lang="en">
             <head>
                 <meta charset="UTF-8" />
-                <meta http-equiv="X-UA-Compatible" content="IE=edge" />
                 <meta
-                http-equiv="Content-Security-Policy"
-                content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';"
+                    http-equiv="Content-Security-Policy"
+                    content="default-src 'none'; style-src ${webview.cspSource}; script-src 'nonce-${nonce}';"
                 />
                 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
