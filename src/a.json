@@ -82,7 +82,7 @@
     },
     {
         "info": {
-            "label": "HelloWorld - abcdefg:39739",
+            "label": "HelloWorld - abcdefg",
             "tooltip": "",
             "description": "open (private)",
             "contextValue": "private-exposed-served-port",
@@ -104,8 +104,8 @@
                 "visibility": 1,
                 "clientsMap": []
             },
-            "description": "",
-            "name": ""
+            "description": "abcdefg",
+            "name": "HelloWorld"
         }
     },
     {

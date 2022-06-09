@@ -40,10 +40,14 @@ class TestProvider implements vscode.WebviewViewProvider {
         this.onHtmlCommand();
     }
 
-    private onHtmlCommand() {
+    private async onHtmlCommand() {
         this._view?.webview.onDidReceiveMessage(async (message: { command: string, port: any }) => {
             const command = message.command;
             const port = JSON.stringify(message.port);
+            if (command === "urlCopy") {
+                await vscode.env.clipboard.writeText(message.port.status.exposed.url);
+                return;
+            }
             vscode.window.showInformationMessage(`${command} - ${port}`);
         });
     }

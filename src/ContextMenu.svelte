@@ -1,4 +1,5 @@
 <script>
+    // TODO: Make options configurable
     import { createEventDispatcher } from "svelte";
 
     export let x = 0;

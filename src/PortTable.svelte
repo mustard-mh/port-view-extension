@@ -2,6 +2,7 @@
     import ContextMenu from "./ContextMenu.svelte";
     import PortInfo from "./PortInfo.svelte";
     import PortStatus from "./PortStatus.svelte";
+    import PortLocalAddress from "./PortLocalAddress.svelte";
     export let ports = [];
     let menuData = {
         x: 0,
@@ -57,9 +58,9 @@
     <table class:table-hover={tableHovered}>
         <tr>
             <th width="40px" />
-            <th style="min-width: 120px">Port</th>
+            <th width="180px">Port</th>
             <th>Local Address</th>
-            <th style="min-width: 140px">Running Process</th>
+            <th width="140px">Running Process</th>
             <th width="120px">Visibility</th>
             <th width="120px">Origin</th>
         </tr>
@@ -89,9 +90,7 @@
                     <!-- Local Address -->
                     <div>
                         {#if (port.status.exposed?.url.length ?? 0) > 0}
-                            <a href={port.status.exposed?.url}
-                                >{port.status.exposed?.url}</a
-                            >
+                            <PortLocalAddress on:hoverCommand={menuCommand} port={port}/>
                         {/if}
                     </div>
                 </td>
