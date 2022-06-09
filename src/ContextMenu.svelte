@@ -93,6 +93,7 @@
         width: 230px;
         border: 1px solid var(--vscode-menu-selectionBorder);
         background-color: var(--vscode-menu-background);
+        z-index: 1000;
     }
     .opt {
         cursor: pointer;
