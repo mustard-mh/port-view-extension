@@ -88,13 +88,14 @@
 
 <style>
     .menu {
+        padding: 4px 0;
         position: fixed;
         display: grid;
         width: 230px;
         border: 1px solid var(--vscode-menu-selectionBorder);
         background-color: var(--vscode-menu-background);
         z-index: 1000;
-        box-shadow: 0 10px 15px -3px black, 0 4px 6px -4px black;
+        box-shadow: 0 10px 15px -3px var(--vscode-widget-shadow), 0 4px 6px -4px var(--vscode-widget-shadow);
     }
     .opt {
         cursor: pointer;
