@@ -94,6 +94,7 @@
         border: 1px solid var(--vscode-menu-selectionBorder);
         background-color: var(--vscode-menu-background);
         z-index: 1000;
+        box-shadow: 0 10px 15px -3px black, 0 4px 6px -4px black;
     }
     .opt {
         cursor: pointer;

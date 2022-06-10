@@ -46,7 +46,48 @@
         closeMenu();
     }
 
-    let tableHovered = true;
+    let tableHovered = false;
+
+    setTimeout(() => {
+        makeTableResizable();
+    }, 2000);
+
+    let tableEl = null;
+    let isResizable = false;
+    let draging = false;
+    function makeTableResizable() {
+        if (isResizable || !tableEl) {
+            return;
+        }
+        isResizable = true;
+        var thElm;
+        var startOffset;
+        tableEl.querySelectorAll("th").forEach((th) => {
+            const tmp = th.querySelectorAll(".grip");
+            if (tmp.length !== 1) {
+                return;
+            }
+            const grip = tmp[0];
+            grip.addEventListener("mousedown", function (e) {
+                thElm = th;
+                startOffset = th.offsetWidth - e.x;
+                draging = true;
+            });
+
+            th.appendChild(grip);
+        });
+
+        document.addEventListener("mousemove", function (e) {
+            if (thElm) {
+                thElm.style.width = startOffset + e.x + "px";
+            }
+        });
+
+        document.addEventListener("mouseup", function () {
+            draging = false;
+            thElm = undefined;
+        });
+    }
 </script>
 
 <main>
@@ -55,13 +96,31 @@
         on:clickoutside={closeMenu}
         on:command={menuCommand}
     />
-    <table class:table-hover={tableHovered}>
+    <table
+        bind:this={tableEl}
+        class:table-resizing={draging}
+        class:table-hover={tableHovered}
+        on:mouseenter={() => (tableHovered = true)}
+        on:mouseleave={() => (tableHovered = false)}
+    >
         <tr>
             <th width="40px" />
-            <th width="180px">Port</th>
-            <th>Local Address</th>
-            <th width="220px">Description</th>
-            <th width="120px">State</th>
+            <th style="min-width: 180px" width="180px"
+                >Port
+                <div class="grip" class:grip-drag={draging} />
+            </th>
+            <th style="min-width: 180px"
+                >Local Address
+                <div class="grip" class:grip-drag={draging} /></th
+            >
+            <th style="min-width: 180px" width="180px"
+                >Description
+                <div class="grip" class:grip-drag={draging} /></th
+            >
+            <th style="min-width: 120px" width="180px"
+                >State
+                <div class="grip" class:grip-drag={draging} /></th
+            >
         </tr>
         {#each ports as port, i (port.status.localPort)}
             <tr
@@ -108,7 +167,9 @@
         border-collapse: collapse;
         font-size: 13px;
         border-spacing: 0;
+        user-select: none;
         table-layout: fixed;
+        min-width: 180px !important;
     }
     tr {
         height: 22px;
@@ -124,6 +185,12 @@
         border-style: solid;
         border-color: transparent;
     }
+    th {
+        border-width: 0;
+        font-weight: 700;
+        position: relative;
+        word-break: keep-all;
+    }
     td {
         overflow: hidden;
         text-overflow: ellipsis;
@@ -138,10 +205,6 @@
         border-color: var(--vscode-scrollbarSlider-background) !important;
     }
 
-    th {
-        font-weight: 700;
-    }
-
     .tr-data:nth-child(odd) {
         background-color: var(--vscode-tree-tableOddRowsBackground);
     }
@@ -152,5 +215,31 @@
         background-color: var(
             --vscode-list-activeSelectionBackground
         ) !important;
+    }
+    .grip {
+        top: 0;
+        right: -10px;
+        bottom: 0;
+        width: 20px;
+        position: absolute;
+        cursor: col-resize;
+        text-align: center;
+    }
+    .grip::before {
+        content: " ";
+        height: 100%;
+        display: inline-block;
+        width: 2px;
+    }
+    .grip:hover::before {
+        background-color: var(--vscode-list-activeSelectionBackground);
+    }
+    .grip-drag::before {
+        width: 4px;
+        background-color: var(--vscode-list-activeSelectionBackground);
+    }
+    .table-resizing td {
+        border-width: 0px 4px 0px 4px;
+        border-color: var(--vscode-list-activeSelectionBackground) !important;
     }
 </style>

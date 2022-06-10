@@ -41,7 +41,6 @@
 <style>
     a {
         color: var(--vscode-foreground);
-        width: 100%;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

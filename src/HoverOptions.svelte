@@ -23,17 +23,22 @@
         <span class="hide">
             {#each options as opt}
                 {#if iconMap[opt.icon] != null}
-               
-                    <span title={opt.title} class="svg-container" on:click={(e) => clickOption(opt.command)}
+                    <span
+                        title={opt.title}
+                        class="svg-container"
+                        on:click={(e) => clickOption(opt.command)}
+                    >
+                        <svg
+                            class="svg"
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 512 512"
                         >
-                        <svg class="svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                             {@html iconMap[opt.icon]}
                         </svg>
-                    </span
-                    >
+                    </span>
                 {/if}
             {/each}
-            <svg class="svg" style="display: none;"></svg>
+            <svg class="svg" style="display: none;" />
         </span>
     </div>
 </main>
@@ -44,6 +49,7 @@
         flex: none;
         padding-left: 4px;
         box-sizing: border-box;
+        align-content: center;
     }
 
     .hide > span {
@@ -52,10 +58,12 @@
 
     .slot {
         flex: 0 1 auto;
-        flex-grow: 1;
+        min-width: 0;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        display: inline-flex;
+        align-content: center;
     }
 
     .container {
@@ -66,10 +74,10 @@
 
     .hide:hover,
     .container:hover > .hide {
-        display: inline-block;
+        display: inline-flex;
     }
     .svg-container {
-        display: inline-flex;
+        display: inline-block;
         width: 12px;
         height: 12px;
     }
