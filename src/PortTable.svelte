@@ -23,8 +23,6 @@
         menuData.showMenu = true;
     }
 
-    onRightClick({ x: 200, y: 200 }, ports[0]);
-
     function closeMenu() {
         menuData.showMenu = false;
     }
