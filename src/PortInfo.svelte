@@ -1,31 +1,32 @@
 <script>
     export let port = {
-        info: { label: "8080" },
-        status: { localPort: 8080, remotePort: 8081 },
+        info: { label: "8080", tooltip: "" },
+        status: { localPort: 8080, remotePort: 8081, name: "abc" },
     };
 
     let info = "";
     $: ((port) => {
-        const showRemoteDetail =
-            port.status.remotePort &&
-            port.status.remotePort !== port.status.localPort;
+        const showName = (port.status.name?.length ?? 0) > 0;
         const showPortDetail =
-            port.info.label !== port.status.localPort.toString() ||
-            showRemoteDetail;
+            port.status.remotePort != null &&
+            port.info.localPort !== port.status.remotePort;
 
-        info = port.info.label;
+        info = port.status.name ?? port.status.localPort.toString();
+
         if (showPortDetail) {
-            if (showRemoteDetail) {
-                info += ` (${port.status.localPort}:${port.status.remotePort})`
-            } else {
-                info += port.status.localPort
-            }
+            info +=
+                info === port.status.name
+                    ? ` (${port.status.localPort}:${port.status.remotePort})`
+                    : ` :${port.status.remotePort}`;
+        } else {
+            info +=
+                info === port.status.name ? ` (${port.status.localPort})` : "";
         }
     })(port);
 </script>
 
 <main>
-    <span title={info}>{info}</span>
+    <span title={port.info.tooltip}>{info}</span>
 </main>
 
 <style>

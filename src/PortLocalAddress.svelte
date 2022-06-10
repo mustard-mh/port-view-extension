@@ -34,8 +34,20 @@
     }
 </script>
 
-<main>
-    <HoverOptions options={hoverOpts} on:command={onHoverCommand}>
-        <a href={port.status.exposed.url}>{port.status.exposed.url}</a>
-    </HoverOptions>
-</main>
+<HoverOptions options={hoverOpts} on:command={onHoverCommand}>
+    <a href={port.status.exposed.url}>{port.status.exposed.url}</a>
+</HoverOptions>
+
+<style>
+    a {
+        color: var(--vscode-foreground);
+        width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
+    }
+    a:focus {
+        outline: none;
+    }
+</style>

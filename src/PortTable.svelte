@@ -60,9 +60,8 @@
             <th width="40px" />
             <th width="180px">Port</th>
             <th>Local Address</th>
-            <th width="140px">Running Process</th>
-            <th width="120px">Visibility</th>
-            <th width="120px">Origin</th>
+            <th width="220px">Description</th>
+            <th width="120px">State</th>
         </tr>
         {#each ports as port, i (port.status.localPort)}
             <tr
@@ -80,34 +79,23 @@
                 >
                     <PortStatus status={port.info.iconStatus} />
                 </td>
+                <!-- Port (port info) -->
                 <td>
-                    <!-- Port (port info) -->
-                    <div class="resizable">
-                        <PortInfo {port} />
-                    </div>
+                    <PortInfo {port} />
                 </td>
+                <!-- Local Address -->
                 <td>
-                    <!-- Local Address -->
-                    <div>
-                        {#if (port.status.exposed?.url.length ?? 0) > 0}
-                            <PortLocalAddress on:hoverCommand={menuCommand} port={port}/>
-                        {/if}
-                    </div>
-                </td>
-                <td>
-                    <!-- TODO(hw): no data for `Running Process` now -->
-                </td>
-                <td>
-                    <!-- Visibility -->
-                    {#if port.status.served}
-                        {port.status.exposed.visibility === 1
-                            ? "public"
-                            : "private"}
+                    {#if (port.status.exposed?.url.length ?? 0) > 0}
+                        <PortLocalAddress
+                            on:hoverCommand={menuCommand}
+                            {port}
+                        />
                     {/if}
                 </td>
-                <td>
-                    <!-- TODO(hw): no data for `Origin` now (origin will be like `.gitpod.yml` `Auto Detect` ) -->
-                </td>
+                <!-- description -->
+                <td>{port.status.description}</td>
+                <!-- state -->
+                <td>{port.info.description}</td>
             </tr>
         {/each}
     </table>
@@ -135,9 +123,6 @@
         border-collapse: collapse;
         border-style: solid;
         border-color: transparent;
-    }
-    .resizable {
-        resize: horizontal;
     }
     td {
         overflow: hidden;

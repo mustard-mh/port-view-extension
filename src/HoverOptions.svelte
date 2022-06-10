@@ -41,29 +41,40 @@
 <style>
     .hide {
         display: none;
-        position: absolute;
-        right: 0;
-        top: 0;
+        flex: none;
+        padding-left: 4px;
+        box-sizing: border-box;
     }
 
     .hide > span {
         margin-left: 4px;
     }
 
+    .slot {
+        flex: 0 1 auto;
+        flex-grow: 1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
     .container {
         position: relative;
+        display: flex;
+        justify-content: space-between;
     }
 
     .hide:hover,
     .container:hover > .hide {
-        display: block;
+        display: inline-block;
     }
     .svg-container {
-        display: inline-block;
+        display: inline-flex;
         width: 12px;
         height: 12px;
     }
     .svg {
+        flex: none;
         cursor: pointer;
         display: inline-block;
         box-sizing: border-box;
